@@ -1,0 +1,80 @@
+---
+title: "Using Ternary Plots to Visualise London's Energy Consumption"
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+
+```
+
+```{r}
+energy <- read_csv(
+  "https://data.london.gov.uk/download/leggi/2d6ee3f1-e928-48a9-8eab-01748c65ac6f/energy-consumption-borough-leggi.csv")
+
+energy <- energy %>% janitor::clean_names()
+
+energy$k_wh <- as.numeric(energy$k_wh)
+
+```
+
+```{r}
+energy_summarised <- energy %>% 
+  filter(leggi_year == 2016, sector != "Total", area != "Unapportioned", area != "London") %>% 
+  group_by(area, sector) %>% 
+  summarise(energy_consumption = sum(k_wh)) %>% 
+  ungroup()
+
+energy_summarised %>% 
+  group_by(area) %>% 
+  mutate(energy_consumption = energy_consumption/sum(energy_consumption)) %>% 
+  mutate(sector = fct_reorder(sector, energy_consumption)) %>% 
+  ggplot(aes(fct_reorder2(area, sector, energy_consumption), energy_consumption)) + 
+  geom_col(aes(fill = sector), position = "fill") +
+  coord_flip()
+
+```
+
+```{r fig.height = 20, fig.width = 20, message=FALSE}
+library(ggtern)
+library(JLLify)
+
+# devtools::install_github("OwnKng/JLLify")
+
+energy_tern <-energy_summarised %>% 
+  spread(sector, value = energy_consumption)
+
+ggtern_base(x_label = "Domestic", y_label = "Industrial\n &\nCommercial", z_label = "Transport", 
+            x_color = "#B8D8D8", y_color = "#FE5F55", z_color = "#EEF5DB") +
+  geom_point(data = energy_tern, aes(Domestic, `Industrial and Commercial`, Transport), 
+             shape = 17, size = 6, color = "white") + 
+  theme_ternary_dark(x_color = "#B8D8D8", y_color = "#FE5F55", z_color = "#EEF5DB") + 
+  labs(x = "", y = "", z = "")
+
+```
+
+```{r, fig.width = 20, fig.height = 70, echo=FALSE}
+
+ggtern_base(x_label = "Dom.",
+            x_color = "#B8D8D8",
+            y_label = "Indus.",
+            y_color = "#FE5F55", 
+            z_label = "Trans.",
+            z_color = "#EEF5DB") +
+  geom_point(data = energy_tern, aes(Domestic, `Industrial and Commercial`, Transport), 
+             shape = 17, size = 6, color = "white") + 
+  facet_wrap(~area, ncol = 3) + 
+  theme_ternary_dark(x_color = "#B8D8D8", y_color = "#FE5F55", z_color = "#EEF5DB") + 
+  labs(title = "Energy Consumption by Sector", 
+       subtitle = "% of Boroughs' energy consumption from domestic, industrial or transport uses",
+       x = "", y = "", z = "") + 
+  theme(plot.title = element_text(size = 28, color = "white"), 
+        plot.subtitle = element_text(size = 24, color = "white"))
+
+
+
+```
