@@ -14,7 +14,7 @@ This post shows how ternary plots can be both an communicative and beautiful for
 
 The data we're using comes the London Energy and Greenhouse Gas Inventory (LEGGI). This is a record of greenhouse gas emissions and energy consumption from homes, workplaces and transport within the Greater London area. It is published every year, though the most recent record we have is from 2017. Here, we will look at energy consumption only. 
 
-```{r}
+```{r,  message=FALSE, warning=FALSE}
 library(tidyverse)
 
 energy <- read_csv(
@@ -60,7 +60,7 @@ Where we have three categories in our data, ternary plots are a good alternative
 
 The ggtern package is an extension to ggplot that enables the creation of ternary charts. As these plots have three axes, they can be difficult to read correctly. To remedy this, I've developed some light touch functions that handle the aesthetic styling of a ternary plot - applying axes colouring, shading certain zones and adding labels, etc. These functions are available in the JLLify package, which can be installed via github. 
 
-```{r fig.height = 7, fig.width = 9, message=FALSE, warning=FALSE}
+```{r fig.height = 9, fig.width = 9, message=FALSE, warning=FALSE}
 library(ggtern)
 
 # devtools::install_github("OwnKng/JLLify")
@@ -79,7 +79,9 @@ ggtern_base(x_label = "Domestic",
              shape = 17, size = 6, color = "white") + 
   theme_ternary_dark(x_color = "#B8D8D8", y_color = "#FE5F55", z_color = "#EEF5DB") + 
   labs(x = "%", y = "%", z = "%", 
-       title = "% of energy consumption from different sources in London boroughs")
+       title = "Energy Consumption by Sector", 
+       subtitle = 
+         "% of Boroughs' energy consumption from domestic, industrial or transport uses")
 
 ```
 
@@ -87,7 +89,7 @@ From this plot, we can see that in around two-thirds of London boroughs, domesti
 
 While this plot is useful for looking at the overall trend in the data, what it lacks is the ability to look at the distribution in each London borough (unlike the column graph). We can resolve this by faceting the visualisation, generating a longer, info-graphic style plot.   
 
-```{r, fig.width = 9, fig.height = 30, echo=FALSE}
+```{r, fig.width = 9, fig.height = 30, echo=FALSE, warning=FALSE}
 
 ggtern_base(x_label = "Dom.",
             x_color = "#B8D8D8",
@@ -101,10 +103,6 @@ ggtern_base(x_label = "Dom.",
   theme_ternary_dark(x_color = "#B8D8D8", y_color = "#FE5F55", z_color = "#EEF5DB") + 
   labs(title = "Energy Consumption by Sector", 
        subtitle = "% of Boroughs' energy consumption from domestic, industrial or transport uses",
-       x = "%", y = "%", z = "%") + 
-  theme(plot.title = element_text(size = 28, color = "white"), 
-        plot.subtitle = element_text(size = 24, color = "white"))
-
-
+       x = "%", y = "%", z = "%") 
 
 ```
