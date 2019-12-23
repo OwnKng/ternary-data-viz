@@ -130,4 +130,8 @@ what it lacks is the ability to look at the distribution in each London
 borough (unlike the column graph). We can resolve this by faceting the
 visualisation, generating a longer, info-graphic style plot.
 
+From this plot, we can easilly pick out the London boroughs for which
+industrial and commercial applications represent a higher share of
+energy usage - Westminster, Camden, the City.
+
 ![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
