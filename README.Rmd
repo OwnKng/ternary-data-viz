@@ -60,7 +60,7 @@ Where we have three categories in our data, ternary plots are a good alternative
 
 The ggtern package is an extension to ggplot that enables the creation of ternary charts. As these plots have three axes, they can be difficult to read correctly. To remedy this, I've developed some light touch functions that handle the aesthetic styling of a ternary plot - applying axes colouring, shading certain zones and adding labels, etc. These functions are available in the JLLify package, which can be installed via github. 
 
-```{r fig.height = 9, fig.width = 9, message=FALSE, warning=FALSE}
+```{r fig.height = 12, fig.width = 12, message=FALSE, warning=FALSE}
 library(ggtern)
 
 # devtools::install_github("OwnKng/JLLify")
@@ -87,9 +87,11 @@ ggtern_base(x_label = "Domestic",
 
 From this plot, we can see that in around two-thirds of London boroughs, domestic consumption accounts for the largest share of energy consumption. Industrial and commercial consumption accounts for the majority of energy usage in the other third. In one London borough - Hillingdon, where Heathrow Airport is located - transport represents about 50% of energy consumption.   
 
-While this plot is useful for looking at the overall trend in the data, what it lacks is the ability to look at the distribution in each London borough (unlike the column graph). We can resolve this by faceting the visualisation, generating a longer, info-graphic style plot.   
+While this plot is useful for looking at the overall trend in the data, what it lacks is the ability to look at the distribution in each London borough (unlike the column graph). We can resolve this by faceting the visualisation, generating a longer, info-graphic style plot. 
 
-```{r, fig.width = 9, fig.height = 30, echo=FALSE, warning=FALSE}
+From this plot, we can easilly pick out the London boroughs for which industrial and commercial applications represent a higher share of energy usage - Westminster, Camden, the City.    
+
+```{r, fig.width = 18, fig.height = 60, echo=FALSE, warning=FALSE}
 
 ggtern_base(x_label = "Dom.",
             x_color = "#B8D8D8",
